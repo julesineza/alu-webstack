@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# function to get two parameters then return data from the dns
+
+domain=$1
+sub_domain=$2
+
+for_www=$(dig www.julesineza.tech | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
+for_lb_01=$(dig lb-01.julesineza.tech | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
+for_web_01=$(dig web-01.julesineza.tech | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
+for_web_02=$(dig web-02.julesineza.tech | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
+
+dns_output() {
+    if [ -n "$domain" ] && [ -z "$sub_domain" ]; then 
+        echo "The subdomain www is a A record and points to $for_www"
+        echo "The subdomain lb-01 is a A record and points to $for_lb_01"
+        echo "The subdomain web-01 is a A record and points to $for_web_01"
+        echo "The subdomain web-02 is a A record and points to $for_web_02"
+    elif [ -n "$domain" ] && [ -n "$sub_domain" ]; then
+        subdomain_ip=$(dig "$sub_domain.julesineza.tech" | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
+        echo "The subdomain $sub_domain is a A record and points to $subdomain_ip" 
+    else
+        echo "No domain parameter"
+    fi
+}
+
+dns_output
