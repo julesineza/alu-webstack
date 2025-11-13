@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# SSL termination on HAproxy
+
+sudo apt update
+
+# Install snapd if not already installed
+sudo apt install -y snapd
+
+# Install certbot
+sudo snap install --classic certbot
+
+# Create symlink for certbot (remove old one if exists)
+sudo ln -sf /snap/bin/certbot /usr/bin/certbot
+
+# Stop HAproxy temporarily to free up port 80/443 for certbot
+sudo service haproxy stop 2>/dev/null || true
+
+# Get SSL certificate (replace www.yourdomain.com with your actual domain)
+# Use --non-interactive and --agree-tos for automation
+# Add your email with -m flag
+sudo certbot certonly --standalone -d www.julesineza.tech --non-interactive --agree-tos -m j.ineza@alustudent.com
+
+# Create directory for HAproxy certs
+sudo mkdir -p /etc/haproxy/certs
+
+# Combine fullchain and privkey for HAproxy (HAproxy needs them in one file)
+DOMAIN="www.julesineza.tech"
+sudo cat /etc/letsencrypt/live/$DOMAIN/fullchain.pem /etc/letsencrypt/live/$DOMAIN/privkey.pem | sudo tee /etc/haproxy/certs/$DOMAIN.pem
+
+# Set proper permissions
+sudo chmod 600 /etc/haproxy/certs/$DOMAIN.pem
+
+# Restart HAproxy
+sudo service haproxy start
