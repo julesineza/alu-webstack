@@ -4,10 +4,10 @@
 domain=$1
 sub_domain=$2
 
-for_www=$(dig www.$domain| grep -A1 'ANSWER SECTION:' | awk '{print $5}')
-for_lb_01=$(dig lb-01.$domain| grep -A1 'ANSWER SECTION:' | awk '{print $5}')
-for_web_01=$(dig web-01.$domain | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
-for_web_02=$(dig web-02.$domain | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
+for_www=$(dig www.$domain| grep -A1 'ANSWER SECTION:' |tail -n1| awk '{print $5}')
+for_lb_01=$(dig lb-01.$domain| grep -A1 'ANSWER SECTION:' |tail -n1| awk '{print $5}')
+for_web_01=$(dig web-01.$domain | grep -A1 'ANSWER SECTION:' |tail -n1| awk '{print $5}')
+for_web_02=$(dig web-02.$domain | grep -A1 'ANSWER SECTION:' |tail -n1| awk '{print $5}')
 
 dns_output() {
     if [ -n "$domain" ] && [ -z "$sub_domain" ]; then 
