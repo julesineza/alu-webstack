@@ -11,10 +11,10 @@ for_web_02=$(dig web-02.$domain | grep -A1 'ANSWER SECTION:' |tail -n1| awk '{pr
 
 dns_output() {
     if [ -n "$domain" ] && [ -z "$sub_domain" ]; then 
-        echo "The subdomain www is a A record and points to$for_www"
-        echo "The subdomain lb-01 is a A record and points to$for_lb_01"
-        echo "The subdomain web-01 is a A record and points to$for_web_01"
-        echo "The subdomain web-02 is a A record and points to$for_web_02"
+        echo "The subdomain www is a A record and points to $for_www"
+        echo "The subdomain lb-01 is a A record and points to $for_lb_01"
+        echo "The subdomain web-01 is a A record and points to $for_web_01"
+        echo "The subdomain web-02 is a A record and points to $for_web_02"
     elif [ -n "$domain" ] && [ -n "$sub_domain" ]; then
         subdomain_ip=$(dig "$sub_domain.$domain" | grep -A1 'ANSWER SECTION:' | awk '{print $5}')
         echo "The subdomain $sub_domain is a A record and points to $subdomain_ip" 
